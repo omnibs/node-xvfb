@@ -10,7 +10,7 @@
     "url": "https://github.com/Rob--W/node-xvfb.git"
   },
   "dependencies": {
-    "sleep": "2.0.x"
+    "sleep": "3.0.x"
   },
   "license": "MIT"
 }
