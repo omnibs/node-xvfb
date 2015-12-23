@@ -1,9 +1,19 @@
 var fs = require('fs');
 var path = require('path');
 var spawn = require('child_process').spawn;
-var usleep = require('sleep').usleep;
 fs.exists = fs.exists || path.exists;
 fs.existsSync = fs.existsSync || path.existsSync;
+
+var usleep;
+try {
+  usleep = require('sleep').usleep;
+} catch (e) {
+  usleep = function(microsecs) {
+    // Fall back to busy loop.
+    var deadline = Date.now() + microsecs / 1000;
+    while (Date.now() <= deadline);
+  };
+}
 
 
 function Xvfb(options) {
