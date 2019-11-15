@@ -9,8 +9,5 @@
   "repository": {
     "url": "https://github.com/Rob--W/node-xvfb.git"
   },
-  "optionalDependencies": {
-    "sleep": "3.0.x"
-  },
   "license": "MIT"
 }

@@ -4,17 +4,12 @@ var spawn = require('child_process').spawn;
 fs.exists = fs.exists || path.exists;
 fs.existsSync = fs.existsSync || path.existsSync;
 
-var usleep;
-try {
-  usleep = require('sleep').usleep;
-} catch (e) {
-  usleep = function(microsecs) {
-    // Fall back to busy loop.
-    var deadline = Date.now() + microsecs / 1000;
-    while (Date.now() <= deadline);
-  };
+function msleep(n) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
 }
-
+function sleep(n) {
+  msleep(n*1000);
+}
 
 function Xvfb(options) {
   options = options || {};
@@ -73,7 +68,7 @@ Xvfb.prototype = {
 
       this._setDisplayEnvVariable();
       this._spawnProcess(fs.existsSync(lockFile), function(e) {
-        // Ignore async spawn error. While usleep is active, tasks on the
+        // Ignore async spawn error. While msleep is active, tasks on the
         // event loop cannot be executed, so spawn errors will never be
         // received during the startSync call.
       });
@@ -83,7 +78,7 @@ Xvfb.prototype = {
         if (totalTime > this._timeout) {
           throw new Error('Could not start Xvfb.');
         }
-        usleep(10000);
+        msleep(10);
         totalTime += 10;
       }
     }
@@ -128,7 +123,7 @@ Xvfb.prototype = {
         if (totalTime > this._timeout) {
           throw new Error('Could not stop Xvfb.');
         }
-        usleep(10000);
+        msleep(10);
         totalTime += 10;
       }
     }
